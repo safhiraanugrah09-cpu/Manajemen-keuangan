@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinansialKu — Manajemen Keuangan Pribadi</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">F</span><span>Finansial<span class="brand-light">Ku</span></span></div>
+      <p class="nav-caption">MENU UTAMA</p>
+      <nav>
+        <a class="nav-link active" href="#dashboard" data-page="dashboard"><span>▦</span> Dashboard</a>
+        <a class="nav-link" href="#transaksi" data-page="transaksi"><span>⇄</span> Transaksi</a>
+        <a class="nav-link" href="#laporan" data-page="laporan"><span>▤</span> Laporan</a>
+      </nav>
+      <div class="sidebar-note">
+        <div class="note-icon">✦</div>
+        <strong>Tips keuangan</strong>
+        <p>Catat pengeluaranmu setiap hari agar kondisi keuangan tetap terkontrol.</p>
+      </div>
+      <div class="profile"><div class="avatar">U</div><div><strong>Pengguna</strong><small>Akun pribadi</small></div></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+        <div><p class="eyebrow" id="todayLabel">RINGKASAN KEUANGAN</p><h1 id="pageTitle">Dashboard</h1></div>
+        <div class="top-actions"><span class="date-chip" id="dateChip"></span><button class="primary-btn" id="quickAdd">＋ Tambah transaksi</button></div>
+      </header>
+
+      <section class="page active" id="dashboard">
+        <div class="welcome-row"><div><h2>Halo, selamat datang! 👋</h2><p>Berikut ringkasan kondisi keuanganmu.</p></div><span class="period-label">Semua transaksi</span></div>
+        <div class="summary-grid">
+          <article class="summary-card balance-card"><div class="card-top"><span>Total Saldo</span><span class="card-icon">◈</span></div><h2 id="balanceValue">Rp0</h2><p><span class="trend-dot"></span> Saldo saat ini</p></article>
+          <article class="summary-card"><div class="card-top"><span>Total Pemasukan</span><span class="card-icon income-icon">↙</span></div><h2 id="incomeValue">Rp0</h2><p class="muted">Akumulasi pemasukan</p></article>
+          <article class="summary-card"><div class="card-top"><span>Total Pengeluaran</span><span class="card-icon expense-icon">↗</span></div><h2 id="expenseValue">Rp0</h2><p class="muted">Akumulasi pengeluaran</p></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Arus Keuangan</h3><p>Perbandingan pemasukan dan pengeluaran</p></div><span class="mini-tag">Ringkasan</span></div><div class="chart-wrap"><canvas id="flowChart"></canvas></div></article>
+          <article class="panel"><div class="panel-heading"><div><h3>Komposisi Pengeluaran</h3><p>Berdasarkan kategori</p></div></div><div class="chart-wrap doughnut-wrap"><canvas id="categoryChart"></canvas></div><div id="categoryLegend" class="category-legend"></div></article>
+        </div>
+        <article class="panel recent-panel"><div class="panel-heading"><div><h3>Transaksi Terbaru</h3><p>Aktivitas keuangan terakhir</p></div><button class="text-btn" data-goto="transaksi">Lihat semua →</button></div><div class="table-scroll"><table><thead><tr><th>TRANSAKSI</th><th>KATEGORI</th><th>TANGGAL</th><th>JUMLAH</th></tr></thead><tbody id="recentRows"></tbody></table></div></article>
+      </section>
+
+      <section class="page" id="transaksi">
+        <div class="section-toolbar"><div><h2>Daftar Transaksi</h2><p>Kelola semua pemasukan dan pengeluaranmu.</p></div><button class="primary-btn" id="addTransaction">＋ Tambah transaksi</button></div>
+        <div class="filter-row"><input id="searchInput" type="search" placeholder="Cari transaksi..."><select id="typeFilter"><option value="all">Semua jenis</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select><select id="categoryFilter"><option value="all">Semua kategori</option></select></div>
+        <article class="panel"><div class="table-scroll"><table><thead><tr><th>TRANSAKSI</th><th>KATEGORI</th><th>TANGGAL</th><th>JENIS</th><th>JUMLAH</th><th>AKSI</th></tr></thead><tbody id="transactionRows"></tbody></table></div><div id="emptyState" class="empty-state" hidden>Belum ada transaksi. Tambahkan transaksi pertamamu.</div></article>
+      </section>
+
+      <section class="page" id="laporan">
+        <div class="section-toolbar"><div><h2>Laporan Keuangan</h2><p>Evaluasi pemasukan dan pengeluaranmu.</p></div><button class="outline-btn" id="exportCsv">⇩ Unduh CSV</button></div>
+        <div class="summary-grid report-summary"><article class="summary-card"><span>Total Pemasukan</span><h2 id="reportIncome">Rp0</h2></article><article class="summary-card"><span>Total Pengeluaran</span><h2 id="reportExpense">Rp0</h2></article><article class="summary-card"><span>Selisih</span><h2 id="reportDifference">Rp0</h2></article></div>
+        <article class="panel report-panel"><div class="panel-heading"><div><h3>Ringkasan per kategori</h3><p>Total pengeluaran untuk setiap kategori.</p></div></div><div id="reportCategories" class="report-categories"></div></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="transactionModal">
+    <div class="modal">
+      <div class="modal-heading"><div><p class="eyebrow">CATAT KEUANGAN</p><h2>Tambah transaksi</h2></div><button class="close-btn" id="closeModal">×</button></div>
+      <form id="transactionForm">
+        <label>Nama transaksi<input name="name" type="text" placeholder="Contoh: Gaji bulanan" required maxlength="60"></label>
+        <div class="form-grid"><label>Jenis transaksi<select name="type" id="formType"><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></label><label>Kategori<select name="category" id="formCategory" required></select></label></div>
+        <div class="form-grid"><label>Jumlah (Rupiah)<input name="amount" type="number" min="1" step="1" placeholder="Contoh: 500000" required></label><label>Tanggal<input name="date" type="date" required></label></div>
+        <label>Catatan (opsional)<textarea name="note" rows="2" placeholder="Tambahkan keterangan..."></textarea></label>
+        <button class="primary-btn submit-btn" type="submit">Simpan transaksi</button>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
